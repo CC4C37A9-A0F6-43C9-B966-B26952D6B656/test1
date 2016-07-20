@@ -22,7 +22,12 @@ myFirstKorporateKApp.config(function ($stateProvider, $urlRouterProvider) {
         .state("checkout", {
             url: "/checkout",
             templateUrl: "/templates/checkout.html",
-            controller: "cartController"
+            controller: "cartController",
+            resolve: {
+                itemsOnCart: function (cartFactory) {
+                    return cartFactory.getAll();
+                }
+            }
         })
 })
 
@@ -99,8 +104,8 @@ myFirstKorporateKApp.controller("homeController", ["$scope", "cartFactory", "dat
     };
     }]);
 
-myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactory",
-    function ($scope,$http, cartFactory) {
+myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactory","itemsOnCart",
+    function ($scope,$http, cartFactory,itemsOnCart) {
     //remove from in memory cart
     $scope.cartRemove = function (product) {
         //console.info("trying to remove");
@@ -135,6 +140,9 @@ myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactor
     $scope.tax = 0;
     $scope.total = 0;
 
-    $scope.ProductsOnCart = cartFactory.getAll();
+    $scope.ProductsOnCart = itemsOnCart;
+
+    //not longer necessary because I am inject data into the controller
+    //$scope.ProductsOnCart = cartFactory.getAll(); 
 
 }]);
