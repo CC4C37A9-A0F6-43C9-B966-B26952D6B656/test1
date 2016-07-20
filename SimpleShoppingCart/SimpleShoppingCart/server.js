@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var constFolderPublic = ""; //"/public";
+var constFolderPublic = "";
 var constFolderNodeModules = "/node_modules";
 var serverPortToListen = "3000";
 
@@ -20,10 +20,11 @@ app.use(
 //GET
 //app.get("/", function (req, res) {
 //    res.sendFile(
-//                "main.html",
+//                "index.html",
 //                { "root": __dirname + constFolderPublic }
 //            )
 //});
+
 
 //-----------------------------------------------------------------------
 //API SPECIFIC
@@ -41,10 +42,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post("/api/cart/calculateTaxes", function (req, res) {
     var products = req.body;
     var subtotal = 0; var tax = 0;
+    var defaultTax = 7/100;
     products.forEach(function (item) {
         subtotal += item.UnitCost;
-        //Henry, I am using tax by product because some countries might have a different tax % for a tabaco products, for instance.
-        tax += item.UnitCost * (item.Tax / 100);
+        tax += item.UnitCost * defaultTax;//tax += item.UnitCost * (item.Tax / 100);
     });
     res.send(
         {
@@ -54,6 +55,9 @@ app.post("/api/cart/calculateTaxes", function (req, res) {
         }
     );
 });
+
+
+
 //-----------------------------------------------------------------------
 app.listen(
     serverPortToListen,

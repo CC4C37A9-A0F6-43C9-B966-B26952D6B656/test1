@@ -359,18 +359,9 @@
     <Content Include="node_modules\express\node_modules\type-is\node_modules\mime-types\node_modules\mime-db\index.js" />
     <Content Include="node_modules\express\node_modules\utils-merge\index.js" />
     <Content Include="node_modules\express\node_modules\vary\index.js" />
-    <Content Include="OLDpartial-about.html" />
-    <Content Include="controllers\tabledataController.js" />
-    <Content Include="OLDpartial-home-list.html" />
-    <Content Include="OLDpartial-home.html" />
-    <Content Include="OLDtable-data.html" />
     <Content Include="server.js" />
     <Content Include="templates\checkout.html" />
-    <Content Include="templates\partial-about.html" />
-    <Content Include="templates\partial-home-list.html" />
-    <Content Include="templates\partial-home.html" />
     <Content Include="templates\products.html" />
-    <Content Include="templates\table-data.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

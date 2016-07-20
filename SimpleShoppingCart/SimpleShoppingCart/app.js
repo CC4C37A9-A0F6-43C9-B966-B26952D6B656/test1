@@ -59,31 +59,45 @@ myFirstKorporateKApp.factory("dataBaseFactory", ["$http", function ($http) {
 }]);
 
 //in memory cart
-myFirstKorporateKApp.factory("productsOnCart", ["$http", function ($http) {
+myFirstKorporateKApp.factory("cartFactory", ["$http", function ($http) {
         var dataFactory = {};
         var inMemoryCart = {};
         inMemoryCart.list = [];
         dataFactory.getAll = function () {
-            console.info("reading inMemoryCart...");
+            //console.info("reading inMemoryCart...");
             return inMemoryCart.list;
         };
         dataFactory.add = function (product) {
             //if (!inMemoryCart.list.contains(product)) {
             inMemoryCart.list.push(product);
-            console.info("added length= " + inMemoryCart.list.length);
+            //console.info("added length= " + inMemoryCart.list.length);
             //}
         };
         dataFactory.remove = function (product) {
-            var index = inMemoryCart.list.indexOf(product);
-            inMemoryCart.list.splice(index, 1);
+            inMemoryCart.list.splice(
+                inMemoryCart.list.indexOf(product),
+                1
+            );
+        };
+
+        dataFactory.calculateTaxes = function () {
+            return $http.post("/api/cart/calculateTaxes", dataFactory.getAll());
+
+            //$http.post("/api/cart/calculateTaxes", dataFactory.getAll()).success(function (data) {
+            //    console.info(data);
+            //    console.info("**********************");
+            //    return data;
+            //}).error(function (data) {
+            //    console.info("----------- error: " + data);
+            //});
         };
 
         return dataFactory;    
 
 }]);
 
-myFirstKorporateKApp.controller("homeController", ["$scope", "productsOnCart", "dataBaseFactory",
-    function ($scope, productsOnCart, dataBaseFactory) {
+myFirstKorporateKApp.controller("homeController", ["$scope", "cartFactory", "dataBaseFactory",
+    function ($scope, cartFactory, dataBaseFactory) {
 
     getProducts();
 
@@ -91,7 +105,7 @@ myFirstKorporateKApp.controller("homeController", ["$scope", "productsOnCart", "
     function getProducts() {
         dataBaseFactory.geProducts()
             .then(function (response) {
-                console.info(response.data.products);
+                //console.info(response.data.products);
                 $scope.Products = response.data.products;
             }, function (error) {
                 $scope.message = {
@@ -102,55 +116,56 @@ myFirstKorporateKApp.controller("homeController", ["$scope", "productsOnCart", "
             });
     }
 
-    //add product to in memory cart
-    //$scope.cartAdd_BACKUP = function (product) {
-    //    console.info("trying to add");
-    //    productsOnCart.add(product);
-    //    //toaster.pop('success', '', 'added to cart');
-    //};
     $scope.cartAdd = function (product) {
-        console.info("trying to add");
-        productsOnCart.add(product);
+        //console.info("trying to add");
+        cartFactory.add(product);
         //toaster.pop('success', '', 'added to cart');
     };
     }]);
 
-myFirstKorporateKApp.controller("cartController", ["$scope", "productsOnCart",
-    function ($scope, productsOnCart) {
+myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactory",
+    function ($scope,$http, cartFactory) {
 
     //on page load
     $scope.subTotal = 0;
     $scope.tax = 0;
     $scope.total = 0;
-    $scope.ProductsOnCart = productsOnCart.getAll();
+    $scope.ProductsOnCart = cartFactory.getAll();
+
     //-----------------------
     //remove from in memory cart
-    $scope.RemoveToCart = function (product) {
+    $scope.cartRemove = function (product) {
         console.info("trying to remove");
-        productsOnCart.remove(product);
-        //this.CalculateTaxes($scope.ProductsOnCart);
+        cartFactory.remove(product);
+        this.calculateTaxes();
     };        
 
+    //calculate taxes
+    $scope.CalculateTaxes = function (cartProducts) {
+        console.info("trying to CalculateTaxes");
+        //cartFactory.calculateTaxes();
+        //console.info(cartFactory.calculateTaxes());
 
+        cartFactory.calculateTaxes()
+            .then(function (response) {
+                //$scope.status = 'Inserted Customer! Refreshing customer list.';
+                //$scope.customers.push(cust);
+                console.info(response.data);
+                //var totals = response;
+                $scope.subTotal = response.data.subtotal;
+                $scope.tax = response.data.tax;
+                $scope.total = response.data.total;
 
-    }]);
+                console.info("COMPLETED..............")
+            }, function (error) {
+                console.info("ERROR..............")
 
- //let"s define the scotch controller that we call up in the about state
-//myFirstKorporateKApp.controller("scotchController",
-//    function ($scope) {
-//    $scope.message = "test";
-//    $scope.scotches = [
-//        {
-//            name: "Macallan 12",
-//            price: 50
-//        },
-//        {
-//            name: "Chivas Regal Royal Salute",
-//            price: 10000
-//        },
-//        {
-//            name: "Glenfiddich 1937",
-//            price: 20000
-//        }
-//    ];
-//});
+                $scope.message = {
+                    success: false,
+                    text: "Well this is embarrassing. We can't process your request :"
+                    + error.message
+                };
+            });
+
+    };
+}]);

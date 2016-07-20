@@ -3,20 +3,17 @@
     {
       "ID": 1,
       "ProductName": "Jeans",
-      "UnitCost": 40,
-      "Tax": 7
+      "UnitCost": 40
     },
     {
       "ID": 2,
       "ProductName": "Shirt",
-      "UnitCost": 50,
-      "Tax": 7
+      "UnitCost": 50
     },
     {
       "ID": 3,
       "ProductName": "Shoes",
-      "UnitCost": 60,
-      "Tax": 7
+      "UnitCost": 60
     }
   ]
 }
