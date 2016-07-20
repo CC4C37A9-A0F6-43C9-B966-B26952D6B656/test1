@@ -1,18 +1,21 @@
 ﻿"use strict";
 
+var myFirstKorporateKApp = angular.module("myFirstKorporateKApp", ["ui.router"]);
 
-
-var routerApp = angular.module("routerApp", ["ui.router"]);
-
-routerApp.config(function ($stateProvider, $urlRouterProvider) {
+myFirstKorporateKApp.config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/home");//will redirect unknow urls to home
 
     $stateProvider
         // HOME STATES AND NESTED VIEWS ========================================
         .state("home", {
             url: "/home",
-            templateUrl: "/templates/partial-home.html",
+            templateUrl: "/templates/products.html",
             controller: "homeController"
+        })
+        .state("checkout", {
+            url: "/checkout",
+            templateUrl: "/templates/checkout.html",
+            controller: "cartController"
         })
         // nested list with custom controller
         .state("home.list", {
@@ -43,48 +46,111 @@ routerApp.config(function ($stateProvider, $urlRouterProvider) {
                     controller: "scotchController"
                 }
             }
-        });// closes $routerApp.config()
+        });// closes $myFirstKorporateKApp.config()
 })
 
-routerApp.factory("dataFactory", ["$http", function ($http) {
+myFirstKorporateKApp.factory("dataBaseFactory", ["$http", function ($http) {
     var serviceUrl = "/api/product";
     var dataFactory = {};
-    dataFactory.getDatabaseProducts = function () {
+    dataFactory.geProducts = function () {
         return $http.get(serviceUrl);
     };
     return dataFactory;
 }]);
 
+//in memory cart
+myFirstKorporateKApp.factory("productsOnCart", ["$http", function ($http) {
+        var dataFactory = {};
+        var inMemoryCart = {};
+        inMemoryCart.list = [];
+        dataFactory.getAll = function () {
+            console.info("reading inMemoryCart...");
+            return inMemoryCart.list;
+        };
+        dataFactory.add = function (product) {
+            //if (!inMemoryCart.list.contains(product)) {
+            inMemoryCart.list.push(product);
+            console.info("added length= " + inMemoryCart.list.length);
+            //}
+        };
+        dataFactory.remove = function (product) {
+            var index = inMemoryCart.list.indexOf(product);
+            inMemoryCart.list.splice(index, 1);
+        };
 
- //let"s define the scotch controller that we call up in the about state
-routerApp.controller("scotchController", function ($scope) {
-    $scope.message = "test";
-    $scope.scotches = [
-        {
-            name: "Macallan 12",
-            price: 50
-        },
-        {
-            name: "Chivas Regal Royal Salute",
-            price: 10000
-        },
-        {
-            name: "Glenfiddich 1937",
-            price: 20000
-        }
-    ];
-});
+        return dataFactory;    
 
-routerApp.controller("homeController", ["$scope", "dataFactory", function ($scope, dataFactory) {
+}]);
+
+myFirstKorporateKApp.controller("homeController", ["$scope", "productsOnCart", "dataBaseFactory",
+    function ($scope, productsOnCart, dataBaseFactory) {
+
     getProducts();
 
+    //get database products
     function getProducts() {
-        dataFactory.getDatabaseProducts().then(function (response) {
-            $scope.products = response.data;
-        }, function (error) {
-            $scope.status =
-                "Well this is embarrassing. We can't process your request :"
-                + error.message;
-        })
+        dataBaseFactory.geProducts()
+            .then(function (response) {
+                console.info(response.data.products);
+                $scope.Products = response.data.products;
+            }, function (error) {
+                $scope.message = {
+                    success: false,
+                    text: "Well this is embarrassing. We can't process your request :"
+                    + error.message
+                };
+            });
     }
-}]);
+
+    //add product to in memory cart
+    //$scope.cartAdd_BACKUP = function (product) {
+    //    console.info("trying to add");
+    //    productsOnCart.add(product);
+    //    //toaster.pop('success', '', 'added to cart');
+    //};
+    $scope.cartAdd = function (product) {
+        console.info("trying to add");
+        productsOnCart.add(product);
+        //toaster.pop('success', '', 'added to cart');
+    };
+    }]);
+
+myFirstKorporateKApp.controller("cartController", ["$scope", "productsOnCart",
+    function ($scope, productsOnCart) {
+
+    //on page load
+    $scope.subTotal = 0;
+    $scope.tax = 0;
+    $scope.total = 0;
+    $scope.ProductsOnCart = productsOnCart.getAll();
+    //-----------------------
+    //remove from in memory cart
+    $scope.RemoveToCart = function (product) {
+        console.info("trying to remove");
+        productsOnCart.remove(product);
+        //this.CalculateTaxes($scope.ProductsOnCart);
+    };        
+
+
+
+    }]);
+
+ //let"s define the scotch controller that we call up in the about state
+//myFirstKorporateKApp.controller("scotchController",
+//    function ($scope) {
+//    $scope.message = "test";
+//    $scope.scotches = [
+//        {
+//            name: "Macallan 12",
+//            price: 50
+//        },
+//        {
+//            name: "Chivas Regal Royal Salute",
+//            price: 10000
+//        },
+//        {
+//            name: "Glenfiddich 1937",
+//            price: 20000
+//        }
+//    ];
+//});

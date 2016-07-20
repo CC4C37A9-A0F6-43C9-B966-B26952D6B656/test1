@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="fake-database\fake-product-db.json" />
+    <Content Include="fake-database\products.json" />
     <Content Include="node_modules\express\History.md" />
     <Content Include="node_modules\express\LICENSE" />
     <Content Include="node_modules\express\node_modules\accepts\HISTORY.md" />
@@ -365,9 +365,11 @@
     <Content Include="OLDpartial-home.html" />
     <Content Include="OLDtable-data.html" />
     <Content Include="server.js" />
+    <Content Include="templates\checkout.html" />
     <Content Include="templates\partial-about.html" />
     <Content Include="templates\partial-home-list.html" />
     <Content Include="templates\partial-home.html" />
+    <Content Include="templates\products.html" />
     <Content Include="templates\table-data.html" />
     <Content Include="Web.config" />
   </ItemGroup>

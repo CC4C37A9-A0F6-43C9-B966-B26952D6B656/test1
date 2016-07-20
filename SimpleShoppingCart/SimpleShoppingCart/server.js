@@ -18,18 +18,18 @@ app.use(
 );
 //-----------------------------------------------------------------------
 //GET
-app.get("/", function (req, res) {
-    res.sendFile(
-                "main.html",
-                { "root": __dirname + constFolderPublic }
-            )
-});
+//app.get("/", function (req, res) {
+//    res.sendFile(
+//                "main.html",
+//                { "root": __dirname + constFolderPublic }
+//            )
+//});
 
 //-----------------------------------------------------------------------
 //API SPECIFIC
 //GET
 app.get("/api/product", function (req, res) {
-    var jsonObj = require(__dirname + "/database/fake-product-db.json");
+    var jsonObj = require(__dirname + "/fake-database/products.json");
     res.json(jsonObj);
 });
 //-----------------------------------------------------------------------
