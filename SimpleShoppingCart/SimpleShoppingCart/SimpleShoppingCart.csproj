@@ -75,6 +75,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app.js" />
+    <Content Include="index.html" />
+    <Content Include="partial-about.html" />
+    <Content Include="partial-home-list.html" />
+    <Content Include="partial-home.html" />
+    <Content Include="table-data.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
