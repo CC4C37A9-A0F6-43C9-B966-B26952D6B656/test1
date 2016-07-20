@@ -17,36 +17,6 @@ myFirstKorporateKApp.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: "/templates/checkout.html",
             controller: "cartController"
         })
-        // nested list with custom controller
-        .state("home.list", {
-            url: "/list",
-            templateUrl: "/templates/partial-home-list.html",
-            controller: function ($scope) {
-                $scope.dogs = ["Bernese", "Husky", "Goldendoodle"];
-            }
-        })
-        // nested list with just some random string data
-        .state("home.paragraph", {
-            url: "/paragraph",
-            template: "I could sure use a drink right now."
-        })
-        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-        .state("about", {
-            url: "/about",
-            views: {
-                // the main template will be placed here (relatively named)
-                "": { templateUrl: "/templates/partial-about.html" },
-
-                // the child views will be defined here (absolutely named)
-                "columnOne@about": { template: "Look I am a column!" },
-
-                // for column two, we"ll define a separate controller
-                "columnTwo@about": {
-                    templateUrl: "/templates/table-data.html",
-                    controller: "scotchController"
-                }
-            }
-        });// closes $myFirstKorporateKApp.config()
 })
 
 myFirstKorporateKApp.factory("dataBaseFactory", ["$http", function ($http) {
@@ -82,7 +52,6 @@ myFirstKorporateKApp.factory("cartFactory", ["$http", function ($http) {
 
         dataFactory.calculateTaxes = function () {
             return $http.post("/api/cart/calculateTaxes", dataFactory.getAll());
-
             //$http.post("/api/cart/calculateTaxes", dataFactory.getAll()).success(function (data) {
             //    console.info(data);
             //    console.info("**********************");
@@ -125,41 +94,24 @@ myFirstKorporateKApp.controller("homeController", ["$scope", "cartFactory", "dat
 
 myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactory",
     function ($scope,$http, cartFactory) {
-
-    //on page load
-    $scope.subTotal = 0;
-    $scope.tax = 0;
-    $scope.total = 0;
-    $scope.ProductsOnCart = cartFactory.getAll();
-
-    //-----------------------
     //remove from in memory cart
     $scope.cartRemove = function (product) {
         console.info("trying to remove");
         cartFactory.remove(product);
-        this.calculateTaxes();
+        $scope.CalculateTaxes();
     };        
 
     //calculate taxes
-    $scope.CalculateTaxes = function (cartProducts) {
+    $scope.CalculateTaxes = function () {
         console.info("trying to CalculateTaxes");
-        //cartFactory.calculateTaxes();
-        //console.info(cartFactory.calculateTaxes());
 
         cartFactory.calculateTaxes()
             .then(function (response) {
-                //$scope.status = 'Inserted Customer! Refreshing customer list.';
-                //$scope.customers.push(cust);
-                console.info(response.data);
-                //var totals = response;
                 $scope.subTotal = response.data.subtotal;
                 $scope.tax = response.data.tax;
                 $scope.total = response.data.total;
-
                 console.info("COMPLETED..............")
             }, function (error) {
-                console.info("ERROR..............")
-
                 $scope.message = {
                     success: false,
                     text: "Well this is embarrassing. We can't process your request :"
@@ -168,4 +120,14 @@ myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactor
             });
 
     };
+
+    $scope.CalculateTaxes();
+
+    //on page load
+    $scope.subTotal = 0;
+    $scope.tax = 0;
+    $scope.total = 0;
+
+    $scope.ProductsOnCart = cartFactory.getAll();
+
 }]);
