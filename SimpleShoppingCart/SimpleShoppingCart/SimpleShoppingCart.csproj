@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="fake-database\fake-product-db.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -77,15 +78,22 @@
   <ItemGroup>
     <Content Include="app.js" />
     <Content Include="index.html" />
-    <Content Include="partial-about.html" />
-    <Content Include="partial-home-list.html" />
-    <Content Include="partial-home.html" />
-    <Content Include="table-data.html" />
+    <Content Include="OLDpartial-about.html" />
+    <Content Include="controllers\tabledataController.js" />
+    <Content Include="OLDpartial-home-list.html" />
+    <Content Include="OLDpartial-home.html" />
+    <Content Include="OLDtable-data.html" />
+    <Content Include="server.js" />
+    <Content Include="templates\partial-about.html" />
+    <Content Include="templates\partial-home-list.html" />
+    <Content Include="templates\partial-home.html" />
+    <Content Include="templates\table-data.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
