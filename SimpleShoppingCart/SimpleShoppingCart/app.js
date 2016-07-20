@@ -6,7 +6,6 @@ myFirstKorporateKApp.config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/home");//will redirect unknow urls to home
 
     $stateProvider
-        // HOME STATES AND NESTED VIEWS ========================================
         .state("home", {
             url: "/home",
             templateUrl: "/templates/products.html",
@@ -50,10 +49,7 @@ myFirstKorporateKApp.factory("cartFactory", ["$http", function ($http) {
             return inMemoryCart.list;
         };
         dataFactory.add = function (product) {
-            //if (!inMemoryCart.list.contains(product)) {
             inMemoryCart.list.push(product);
-            //console.info("added length= " + inMemoryCart.list.length);
-            //}
         };
         dataFactory.remove = function (product) {
             inMemoryCart.list.splice(
