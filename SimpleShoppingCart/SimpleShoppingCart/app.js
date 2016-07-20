@@ -10,7 +10,14 @@ myFirstKorporateKApp.config(function ($stateProvider, $urlRouterProvider) {
         .state("home", {
             url: "/home",
             templateUrl: "/templates/products.html",
-            controller: "homeController"
+            controller: "homeController",
+            resolve: {
+                //Henry, I am using the resolve property to previously retrieve data, then the state transition will not happen until the promise that returns
+                //the data is resolved, meaning the view will not load untill the data is available
+                products: function (dataBaseFactory) {
+                    return dataBaseFactory.geProducts();
+                }
+            }
         })
         .state("checkout", {
             url: "/checkout",
@@ -65,25 +72,25 @@ myFirstKorporateKApp.factory("cartFactory", ["$http", function ($http) {
 
 }]);
 
-myFirstKorporateKApp.controller("homeController", ["$scope", "cartFactory", "dataBaseFactory",
-    function ($scope, cartFactory, dataBaseFactory) {
-
-    getProducts();
+myFirstKorporateKApp.controller("homeController", ["$scope", "cartFactory", "dataBaseFactory", "products",
+    function ($scope, cartFactory, dataBaseFactory,products) {
+        
+    //Henry I no longer need to run getProducts() because I am injecting "products" on a RESOLVER LINE # 14
+    $scope.Products = products.data.products;//getProducts(); 
 
     //get database products
-    function getProducts() {
-        dataBaseFactory.geProducts()
-            .then(function (response) {
-                //console.info(response.data.products);
-                $scope.Products = response.data.products;
-            }, function (error) {
-                $scope.message = {
-                    success: false,
-                    text: "Well this is embarrassing. We can't process your request :"
-                    + error.message
-                };
-            });
-    }
+    //function getProducts() {
+    //    dataBaseFactory.geProducts()
+    //        .then(function (response) {
+    //            $scope.Products = response.data.products;
+    //        }, function (error) {
+    //            $scope.message = {
+    //                success: false,
+    //                text: "Well this is embarrassing. We can't process your request :"
+    //                + error.message
+    //            };
+    //        });
+    //}
 
     $scope.cartAdd = function (product) {
         //console.info("trying to add");
@@ -96,14 +103,14 @@ myFirstKorporateKApp.controller("cartController", ["$scope","$http", "cartFactor
     function ($scope,$http, cartFactory) {
     //remove from in memory cart
     $scope.cartRemove = function (product) {
-        console.info("trying to remove");
+        //console.info("trying to remove");
         cartFactory.remove(product);
         $scope.CalculateTaxes();
     };        
 
     //calculate taxes
     $scope.CalculateTaxes = function () {
-        console.info("trying to CalculateTaxes");
+        //console.info("trying to CalculateTaxes");
 
         cartFactory.calculateTaxes()
             .then(function (response) {
