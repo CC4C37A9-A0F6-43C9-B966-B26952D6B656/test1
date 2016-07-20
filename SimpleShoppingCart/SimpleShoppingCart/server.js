@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var constFolderPublic = "";
+var constFolder = "";
 var constFolderNodeModules = "/node_modules";
 var serverPortToListen = "3000";
 
@@ -8,8 +8,8 @@ var express = require("express");
 var app = express();
 
 app.use(
-    constFolderPublic,
-    express.static(__dirname + constFolderPublic)
+    constFolder,
+    express.static(__dirname + constFolder)
 );
 
 app.use(
@@ -21,10 +21,9 @@ app.use(
 //app.get("/", function (req, res) {
 //    res.sendFile(
 //                "index.html",
-//                { "root": __dirname + constFolderPublic }
+//                { "root": __dirname + constFolder }
 //            )
 //});
-
 
 //-----------------------------------------------------------------------
 //API SPECIFIC
